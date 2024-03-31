@@ -76,7 +76,21 @@ int main(int argc, char* argv[])
             subA[j * N + k] = 0;
         }
     }
-  
+    for (int k = 0; k < blockSize; k++)
+{
+    column = rank * blockSize + k;
+    for (int i = column + 1; i < N; i++) {
+        subA[k * N + i] = subA[k * N + i] / subA[k * N + column];
+    }
+    subB[k] /= subA[k * N + column];
+    subA[k * N + column] = 1;
+    b = subB[k];
+    memcpy(row, &subA[k * N], sizeof(double) * N);
+    MPI_Bcast(row, N, MPI_DOUBLE, rank, MPI_COMM_WORLD);
+    MPI_Bcast(&b, 1, MPI_DOUBLE, rank, MPI_COMM_WORLD);
+    for (int j = k + 1; j < blockSize; j++) {
+        for (int i = column + 1; i < N; i++) {
+            subA[j * N + i] = subA[j * N + i]
     MPI_Finalize();
     
 }
