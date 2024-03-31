@@ -64,7 +64,19 @@ int main(int argc, char* argv[])
     }
 
 }
-    
+  else { //Остальные процессы ждут строку от мастера
+    for (int k = 0; k < rank * blockSize; k++) {//Каждый последующий процесс обрабатывает больше строк
+        MPI_Bcast(row, N, MPI_DOUBLE, k / blockSize, MPI_COMM_WORLD);
+        MPI_Bcast(&b, 1, MPI_DOUBLE, k / blockSize, MPI_COMM_WORLD);
+        for (int j = 0; j < blockSize; j++) {
+            for (int i = k + 1; i < N; i++) {
+                subA[j * N + i] = subA[j * N + i] - subA[j * N + k] * row[i];
+            }
+            subB[j] -= subA[j * N + k] * b;
+            subA[j * N + k] = 0;
+        }
+    }
+  
     MPI_Finalize();
     
 }
