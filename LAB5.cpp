@@ -139,8 +139,7 @@ int main(int argc, char* argv[])
         endTime = MPI_Wtime();
         std::cout << "Time = " << endTime - beginTime << std::endl;
     }
-    // Вывод матрицы matrixResult в любом месте кода
-    printf("Matrix Result (Process %d):\n", rank);
+    
     MPI_Finalize();
     if (rank == 0) {
         int c = 0;
